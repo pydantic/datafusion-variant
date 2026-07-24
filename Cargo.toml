@@ -10,9 +10,9 @@ authors = ["Matthew Kim <matthew@pydantic.dev>"]
 datafusion = "54"
 arrow = "59.1"
 arrow-schema = "59.1"
-parquet-variant-compute = "58.3"
-parquet-variant-json = "58.3"
-parquet-variant = "58.3"
+parquet-variant-compute = "59.1"
+parquet-variant-json = "59.1"
+parquet-variant = "59.1"
 
 [dev-dependencies]
 anyhow = "1.0.100"
