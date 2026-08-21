@@ -7,20 +7,20 @@ license = "Apache-2.0"
 authors = ["Matthew Kim <matthew@pydantic.dev>"]
 
 [dependencies]
-datafusion = "54"
-arrow = "58.3"
-arrow-schema = "58.3"
-parquet-variant-compute = "58.3"
-parquet-variant-json = "58.3"
-parquet-variant = "58.3"
+datafusion = "55"
+arrow = "59.2"
+arrow-schema = "59.2"
+parquet-variant-compute = "59.2"
+parquet-variant-json = "59.2"
+parquet-variant = "59.2"
 
 [dev-dependencies]
 anyhow = "1.0.100"
-arrow-cast = "58.3"
+arrow-cast = "59.2"
 serde_json = "1.0.145"
 flate2 = "1.0"
 tokio = { version = "1.0", features = ["rt-multi-thread", "macros"] }
-datafusion-sqllogictest = "54"
+datafusion-sqllogictest = "55"
 sqllogictest = "0.29"
 indicatif = "0.18"
 env_logger = "0.11"
