@@ -211,6 +211,7 @@ fn to_owned_path(path: &VariantPath<'_>) -> VariantPath<'static> {
         .map(|elem| match elem {
             VariantPathElement::Field { name } => VariantPathElement::field(name.to_string()),
             VariantPathElement::Index { index } => VariantPathElement::index(*index),
+            VariantPathElement::ListElement => VariantPathElement::list_element(),
         })
         .collect();
 

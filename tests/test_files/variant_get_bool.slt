@@ -48,12 +48,12 @@ NULL
 NULL
 NULL
 
-# integer fields coerce to boolean (nonzero -> true); rows without `age` are null
+# integer fields are not booleans, so they are null (parquet-variant 60 no longer casts)
 query B
 select variant_get_bool(json_to_variant(json_str), 'age') from json_data;
 ----
-true
-true
+NULL
+NULL
 NULL
 NULL
 NULL
@@ -79,11 +79,11 @@ select variant_get_bool(json_to_variant('{"greeting": "hello world"}'), 'greetin
 ----
 NULL
 
-# scalar variant with numeric value coerces to boolean (nonzero -> true)
+# scalar variant with numeric value returns null
 query B
 select variant_get_bool(json_to_variant('{"count": 42}'), 'count');
 ----
-true
+NULL
 
 # nested boolean path
 query B

@@ -48,7 +48,7 @@ NULL
 NULL
 NULL
 
-# float values coerce to Int64 (truncated toward zero); rows without `pi` are null
+# float values are not integers, so they are null (parquet-variant 60 no longer casts)
 query I
 select variant_get_int(json_to_variant(json_str), 'pi') from json_data;
 ----
@@ -59,7 +59,7 @@ NULL
 NULL
 NULL
 NULL
-3
+NULL
 
 # Scalar variant with integer value
 query I

@@ -211,7 +211,7 @@ fn return_field_for_variant_get(name: &str, args: ReturnFieldArgs) -> Result<Arc
 
     let data_type = DataType::Struct(Fields::from(vec![
         Field::new("metadata", DataType::BinaryView, false),
-        Field::new("value", DataType::BinaryView, true),
+        Field::new("value", DataType::BinaryView, false),
     ]));
 
     Ok(Arc::new(
@@ -996,7 +996,7 @@ mod tests {
     }
 
     #[test]
-    fn test_int_scalar_float_value_coerces() {
+    fn test_int_scalar_float_value_is_null() {
         let variant_input = variant_scalar_from_json(serde_json::json!({
             "price": 10.5
         }));
@@ -1011,10 +1011,10 @@ mod tests {
 
         let result = udf.invoke_with_args(args).unwrap();
 
-        // parquet-variant 59 coerces numeric variants to the requested type,
-        // truncating floats toward zero (10.5 -> 10) rather than returning NULL.
-        let ColumnarValue::Scalar(ScalarValue::Int64(Some(10))) = result else {
-            panic!("expected Int64(10) from float coercion, got {result:?}");
+        // Since parquet-variant 60 (https://github.com/apache/arrow-rs/pull/10157),
+        // `Variant::as_int64` no longer casts floats, so a float value is NULL.
+        let ColumnarValue::Scalar(ScalarValue::Int64(None)) = result else {
+            panic!("expected NULL Int64 for a float value, got {result:?}");
         };
     }
 
@@ -1406,7 +1406,7 @@ mod tests {
     }
 
     #[test]
-    fn test_bool_scalar_int_value_coerces() {
+    fn test_bool_scalar_int_value_is_null() {
         let variant_input = variant_scalar_from_json(serde_json::json!({
             "count": 1
         }));
@@ -1421,10 +1421,10 @@ mod tests {
 
         let result = udf.invoke_with_args(args).unwrap();
 
-        // parquet-variant 59 coerces numeric variants to boolean (nonzero -> true)
-        // rather than returning NULL.
-        let ColumnarValue::Scalar(ScalarValue::Boolean(Some(true))) = result else {
-            panic!("expected Boolean(true) from int coercion, got {result:?}");
+        // Since parquet-variant 60 (https://github.com/apache/arrow-rs/pull/10157),
+        // `Variant::as_boolean` accepts only boolean values, so an integer is NULL.
+        let ColumnarValue::Scalar(ScalarValue::Boolean(None)) = result else {
+            panic!("expected NULL Boolean for an integer value, got {result:?}");
         };
     }
 
@@ -1537,8 +1537,8 @@ mod tests {
         let bool_arr = arr.as_any().downcast_ref::<BooleanArray>().unwrap();
         assert_eq!(bool_arr.len(), 4);
         assert!(bool_arr.value(0)); // active = true
-        assert!(bool_arr.value(1)); // count = 3 coerces to true (parquet-variant 59)
-        assert!(bool_arr.is_null(2)); // name = "alice" is not boolean-castable
+        assert!(bool_arr.is_null(1)); // count = 3 is not a boolean (parquet-variant 60)
+        assert!(bool_arr.is_null(2)); // name = "alice" is not a boolean
         assert!(bool_arr.is_null(3)); // missing path
     }
 
